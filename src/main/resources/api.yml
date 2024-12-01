@@ -1,0 +1,1747 @@
+openapi: 3.0.3
+info:
+  title: RPG API
+  description: API for RPG REST game.
+  version: '0.1'
+servers:
+  - url: http://localhost:8080
+paths:
+  /users:
+    get:
+      summary: Returns a list of users.
+      operationId: getUsers
+      x-preauth: "hasAuthority('ADMIN')"
+      responses:
+        '200':
+          description: A JSON array of user names
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/UserLite'
+  /character:
+    post:
+      summary: Creates a character.
+      operationId: createCharacter
+      x-preauth: "hasAuthority('USER')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CharacterCreateRequest'
+      responses:
+        '200':
+          description: Info about created character
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterLite'
+  /character/image/{characterArtwork}:
+    get:
+      summary: Get full sized character artwork
+      operationId: getCharacterArtwork
+      parameters:
+        - name: characterArtwork
+          in: path
+          required: true
+          description: Artwork enum
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+  /character/thumbnail/{characterArtwork}:
+    get:
+      summary: Get thumbnail artwork
+      operationId: getCharacterArtworkThumbnail
+      parameters:
+        - name: characterArtwork
+          in: path
+          required: true
+          description: Artwork enum
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            image/jpeg:
+              schema:
+                type: string
+                format: binary
+  /character/artworks:
+    get:
+      summary: Get enum artwork
+      operationId: getCharacterArtworkEnum
+      x-preauth: "hasAuthority('USER')"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  /character/user-characters:
+    get:
+      summary: Get user characters
+      operationId: getUserCharacters
+      x-preauth: "hasAuthority('USER')"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterBasics'
+  /character/{characterId}:
+    get:
+      summary: Get user character by id
+      operationId: getUserCharacter
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterDetails'
+  /statistics/{characterId}:
+    get:
+      summary: Get user character statistics by character id
+      operationId: getStatistics
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsDetails'
+  /statistics/{characterId}/train:
+    post:
+      summary: Train statistics
+      operationId: trainCharacter
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StatisticsUpdateRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsDetails'
+  /enemy:
+    get:
+      summary: Get all enemies
+      operationId: getEnemies
+      x-preauth: "hasAuthority('ADMIN')"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnemyLites'
+    post:
+      summary: Creates an enemy.
+      operationId: createEnemy
+      x-preauth: "hasAuthority('ADMIN')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/EnemyCreateRequest'
+      responses:
+        '200':
+          description: Info about created enemy
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EnemyLite'
+  /skill:
+    get:
+      summary: Get all skills
+      operationId: getSkills
+      x-preauth: "hasAuthority('ADMIN')"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillLites'
+    post:
+      summary: Creates new skill.
+      operationId: createSkill
+      x-preauth: "hasAuthority('ADMIN')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillCreateRequest'
+      responses:
+        '200':
+          description: Info about created skill
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillLite'
+  /adventure:
+    post:
+      summary: Creates new adventure.
+      operationId: createAdventure
+      x-preauth: "hasAuthority('ADMIN')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdventureCreateRequest'
+      responses:
+        '200':
+          description: Info about created adventure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdventureLite'
+  /adventure/{adventureId}:
+    get:
+      summary: Get info about adventure by adventure id
+      operationId: getAdventure
+      x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
+      parameters:
+        - name: adventureId
+          in: path
+          required: true
+          description: Adventure id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdventureDetails'
+    put:
+      summary: Edits adventure.
+      operationId: editAdventure
+      x-preauth: "hasAuthority('ADMIN')"
+      parameters:
+        - name: adventureId
+          in: path
+          required: true
+          description: Adventure id
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdventureCreateRequest'
+      responses:
+        '200':
+          description: Info about edited adventure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdventureLite'
+    delete:
+      summary: Deletes adventure.
+      operationId: deleteAdventure
+      x-preauth: "hasAuthority('ADMIN')"
+      parameters:
+        - name: adventureId
+          in: path
+          required: true
+          description: Adventure id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Info about deleted adventure
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdventureLite'
+  /adventure/{adventureId}/start/{characterId}:
+    get:
+      summary: Start adventure with character
+      operationId: startAdventure
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: adventureId
+          in: path
+          required: true
+          description: Adventure id
+          schema:
+            type: integer
+            format: int64
+        - name: characterId
+          in: path
+          required: true
+          description: Character id that starts adventure
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdventureLite'
+  /adventure/{characterId}/end:
+    get:
+      summary: End adventure with character
+      operationId: endAdventure
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id that ends adventure
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdventureLite'
+  /adventure/search:
+    post:
+      summary: Search adventures.
+      operationId: findAdventures
+      x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AdventureSearchRequest'
+      responses:
+        '200':
+          description: Info about found skills
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdventureBasicPage'
+  /skill/search:
+    post:
+      summary: Search skills.
+      operationId: findSkills
+      x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SkillSearchRequest'
+      responses:
+        '200':
+          description: Info about found skills
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillBasicPage'
+  /skill/{skillId}:
+    get:
+      summary: Get skill by skill id
+      operationId: getSkill
+      x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
+      parameters:
+        - name: skillId
+          in: path
+          required: true
+          description: Skill id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Info about created skill
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillDetails'
+  /skill/character/{characterId}:
+    get:
+      summary: Info about character skills
+      operationId: getCharacterSkills
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id that has skills
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Info about learned skill
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CharacterSkillBasics'
+  /skill/{skillId}/learn/{characterId}:
+    get:
+      summary: Learn skill
+      operationId: learnSkill
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: skillId
+          in: path
+          required: true
+          description: Skill id
+          schema:
+            type: integer
+            format: int64
+        - name: characterId
+          in: path
+          required: true
+          description: Character id that learns skill
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Info about learned skill
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SkillLite'
+  /fight/{characterId}:
+    get:
+      summary: Get fight by character id
+      operationId: getFight
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Info about character fight
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FightDetails'
+  /fight:
+    post:
+      summary: Fight action.
+      operationId: performActionInFight
+      x-preauth: "hasAuthority('USER')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FightActionRequest'
+      responses:
+        '200':
+          description: Necessary info about fight
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FightActionResponse'
+  /item:
+    post:
+      summary: Create item.
+      operationId: createItem
+      x-preauth: "hasAuthority('ADMIN')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemCreateRequest'
+      responses:
+        '200':
+          description: Necessary info about item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemLite'
+  /item/search:
+    post:
+      summary: Search items.
+      operationId: findItems
+      x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ItemSearchRequest'
+      responses:
+        '200':
+          description: Info about found items
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemLitePage'
+  /item/{itemId}/buy/{characterId}:
+    get:
+      summary: Buy item
+      operationId: buyItem
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: itemId
+          in: path
+          required: true
+          description: Item id
+          schema:
+            type: integer
+            format: int64
+        - name: characterId
+          in: path
+          required: true
+          description: Character id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Info about bought item
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ItemLite'
+  /item/potion/buy/{characterId}:
+    get:
+      summary: Buy potion
+      operationId: buyPotion
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content
+  /item/potion/info:
+    get:
+      summary: Get info about potions
+      operationId: getPotionInfo
+      x-preauth: "hasAuthority('USER')"
+      responses:
+        '200':
+          description: Info about potions
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PotionLite'
+  /item/potion/use/{characterId}:
+    get:
+      summary: Heal character out of combat
+      operationId: usePotion
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Statistics info
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StatisticsLite'
+  /work:
+    post:
+      summary: Creates new work.
+      operationId: createWork
+      x-preauth: "hasAuthority('ADMIN')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkCreateRequest'
+      responses:
+        '200':
+          description: Info about created work
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkLite'
+  /work/search:
+    post:
+      summary: Search works.
+      operationId: findWorks
+      x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkSearchRequest'
+      responses:
+        '200':
+          description: Info about found works
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkLitePage'
+  /work/{workId}/start/{characterId}:
+    get:
+      summary: Start work with character
+      operationId: startWork
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: workId
+          in: path
+          required: true
+          description: Work id
+          schema:
+            type: integer
+            format: int64
+        - name: characterId
+          in: path
+          required: true
+          description: Character id that starts adventure
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content
+  /work/{characterId}/end:
+    get:
+      summary: End work with character
+      operationId: endWork
+      x-preauth: "hasAuthority('USER')"
+      parameters:
+        - name: characterId
+          in: path
+          required: true
+          description: Character id that ends work
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '204':
+          description: No content
+components:
+  schemas:
+    ErrorCodes:
+      type: string
+      enum:
+        - EMPTY_JWT
+        - JWT_EXPIRED
+        - USER_NOT_FOUND
+        - REFRESH_TOKEN_NOT_FOUND
+        - ACCOUNT_USERNAME_EXISTS
+        - ACCOUNT_EMAIL_EXISTS
+        - ACCOUNT_ALREADY_VERIFIED
+        - VERIFICATION_EMAIL_SEND_ERROR
+        - CHARACTER_ALREADY_EXISTS
+        - CHARACTER_NOT_FOUND
+        - CHARACTER_IS_OCCUPIED
+        - CHARACTER_IS_NOT_ON_ADVENTURE
+        - NOT_ENOUGH_SKILL_POINTS
+        - GET_IMAGE
+        - IMAGE_DOES_NOT_EXIST
+        - ENUM_VALUE_NOT_FOUND
+        - ENEMY_ALREADY_EXISTS
+        - ENEMY_DOES_NOT_EXIST
+        - SKILL_NOT_FOUND
+        - SKILL_ALREADY_EXISTS
+        - ADVENTURE_NAME_EXISTS
+        - ADVENTURE_NOT_FOUND
+        - FIGHT_IS_ONGOING
+        - FIGHT_IS_NOT_ACTIVE
+        - NOT_ENOUGH_MANA
+        - ITEM_ALREADY_EXISTS
+        - ITEM_NOT_FOUND
+        - NOT_ENOUGH_GOLD
+        - NO_POTIONS_LEFT
+        - WORK_ALREADY_EXISTS
+        - WORK_NOT_FOUND
+        - CHARACTER_STILL_WORKING
+        - CHARACTER_STILL_ON_ADVENTURE
+        - SKILL_CHARACTER_CLASS_MISMATCH
+        - ITEM_ALREADY_BOUGHT
+        - CHARACTER_HP_FULL
+    ElementEvent:
+      type: string
+      enum:
+        - PLAYER_HEALTH_0_20
+        - PLAYER_HEALTH_20_40
+        - PLAYER_HEALTH_40_60
+        - PLAYER_HEALTH_60_80
+        - PLAYER_HEALTH_80_100
+        - ENEMY_HEALTH_0_20
+        - ENEMY_HEALTH_20_40
+        - ENEMY_HEALTH_40_60
+        - ENEMY_HEALTH_60_80
+        - ENEMY_HEALTH_80_100
+    ElementAction:
+      type: string
+      enum:
+        - NORMAL_ATTACK
+        - SPECIAL_ATTACK
+        - USE_POTION
+    SkillType:
+      type: string
+      enum:
+        - NORMAL_DAMAGE
+        - MAGIC_DAMAGE
+    SkillEffect:
+      type: string
+      enum:
+        - BLEEDING
+        - BURNING
+        - STUNNED
+        - WEAKNESS
+        - DAMAGE_BOOST
+        - DEFENCE_BOOST
+        - DAMAGE_DEFENCE_BOOST
+    CharacterClass:
+      type: string
+      enum:
+        - WARRIOR
+        - ROGUE
+        - MAGE
+    CharacterRace:
+      type: string
+      enum:
+        - HUMAN
+        - ELF
+        - DWARF
+    CharacterSex:
+      type: string
+      enum:
+        - MALE
+        - FEMALE
+    CharacterStatus:
+      type: string
+      enum:
+        - IDLE
+        - WORK
+        - FIGHT
+        - TRAINING
+        - ADVENTURE
+    ItemType:
+      type: string
+      enum:
+        - WEAPON
+        - ARMOR
+    UserLite:
+      type: object
+      required:
+        - userName
+        - email
+      properties:
+        userName:
+          type: string
+        email:
+          type: string
+    CharacterCreateRequest:
+      type: object
+      required:
+        - name
+        - race
+        - sex
+        - characterClass
+        - artwork
+        - statistics
+      properties:
+        name:
+          description: Character name
+          type: string
+        race:
+          description: HUMAN/ELF/DWARF
+          type: string
+        sex:
+          description: MALE/FEMALE
+          type: string
+        characterClass:
+          description: WARRIOR/ROGUE/MAGE
+          type: string
+        artwork:
+          description: Character artwork
+          type: string
+        statistics:
+          description: Character statistics
+          $ref: '#/components/schemas/StatisticsUpdateRequest'
+    Pagination:
+      type: object
+      description: Pagination data
+      properties:
+        pageNumber:
+          description: Page number
+          type: integer
+        elements:
+          description: Elements per page
+          type: integer
+        sort:
+          description: Sort by path
+          type: string
+        sortOrder:
+          description: Sort order
+          type: string
+    EnemyCreateRequest:
+      type: object
+      required:
+        - name
+        - hp
+        - mana
+        - damage
+        - numberOfPotions
+        - skillId
+        - skillLevel
+        - enemyStrategy
+      properties:
+        name:
+          description: Enemy name
+          type: string
+        hp:
+          description: Enemy hp
+          type: integer
+        mana:
+          description: Enemy mana
+          type: integer
+        damage:
+          description: Enemy damage
+          type: integer
+        numberOfPotions:
+          description: Enemy potions
+          type: integer
+        skillId:
+          description: Skill id
+          type: integer
+          format: int64
+        skillLevel:
+          description: Enemy skill level
+          type: integer
+        enemyStrategy:
+          description: Enemy strategy
+          type: array
+          items:
+            $ref: '#/components/schemas/StrategyElementCreateRequest'
+    StrategyElementCreateRequest:
+      type: object
+      required:
+        - event
+        - action
+        - priority
+      properties:
+        event:
+          description: Event
+          $ref: '#/components/schemas/ElementEvent'
+        action:
+          description: Action
+          $ref: '#/components/schemas/ElementAction'
+        priority:
+          description: Action priority
+          type: integer
+    StatisticsUpdateRequest:
+      type: object
+      required:
+        - strength
+        - dexterity
+        - constitution
+        - intelligence
+      properties:
+        strength:
+          description: Characters strength to add
+          type: integer
+        dexterity:
+          description: Characters dexterity to add
+          type: integer
+        constitution:
+          description: Characters constitution to add
+          type: integer
+        intelligence:
+          description: Characters intelligence to add
+          type: integer
+    SkillCreateRequest:
+      type: object
+      required:
+        - name
+        - manaCost
+        - type
+        - multiplier
+        - multiplierPerLevel
+        - effectDuration
+        - effectDurationPerLevel
+        - effectMultiplier
+        - effectMultiplierPerLevel
+        - goldCost
+        - statisticPointsCost
+        - characterClass
+      properties:
+        name:
+          description: Skill name
+          type: string
+        manaCost:
+          description: Skill mana cost
+          type: integer
+        type:
+          description: Skill type
+          type: string
+        multiplier:
+          description: Skill multiplier for example totalDamage = normalDamage * multiplier
+          type: number
+          format: float
+        multiplierPerLevel:
+          description: Multiplier to add per level
+          type: number
+          format: float
+        effect:
+          description: Skill effect
+          type: string
+        effectDuration:
+          description: Skill effect duration in turns
+          type: integer
+        effectDurationPerLevel:
+          description: Skill effect duration to add per level
+          type: integer
+        effectMultiplier:
+          description: Effect multiplier for example Burning -> damagePerTurn = maxEnemyHealth * effectMultiplier
+          type: number
+          format: float
+        effectMultiplierPerLevel:
+          description: Effect multiplier to add per level
+          type: number
+          format: float
+        goldCost:
+          description: Skill learn gold cost
+          type: integer
+        statisticPointsCost:
+          description: Skill learn statistics points cost
+          type: integer
+        characterClass:
+          description: Character class skill is for
+          type: string
+    SkillSearchRequest:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        idNotIn:
+          description: Skill id not in
+          type: array
+          items:
+            type: integer
+            format: int64
+        nameLike:
+          description: Skill name fragment
+          type: string
+        skillTypeIn:
+          description: Skill type in
+          type: array
+          items:
+            type: string
+        skillEffectIn:
+          description: Skill effect in
+          type: array
+          items:
+            type: string
+        characterClassIn:
+          description: Character class skill is for in
+          type: array
+          items:
+            type: string
+    AdventureCreateRequest:
+      type: object
+      required:
+        - name
+        - adventureLengthInMinutes
+        - xpForAdventure
+        - goldForAdventure
+        - enemy
+      properties:
+        name:
+          description: Adventure name
+          type: string
+        adventureLengthInMinutes:
+          description: Adventure length given in minutes
+          type: integer
+        xpForAdventure:
+          description: XP given to player for adventure
+          type: integer
+        goldForAdventure:
+          description: Gold given to player for adventure
+          type: integer
+        enemy:
+          description: Enemy id that player will fight in an adventure
+          type: integer
+          format: int64
+    AdventureSearchRequest:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        nameLike:
+          description: Skill name fragment
+          type: string
+        adventureTimeGreaterThanOrEqual:
+          description: Adventure time in minutes greater than or equal
+          type: integer
+        adventureTimeLessThanOrEqual:
+          description: Adventure time in minutes greater than or equal
+          type: integer
+        xpGreaterThanOrEqual:
+          description: XP for adventure greater than or equal
+          type: integer
+        xpLessThanOrEqual:
+          description: XP for adventure greater than or equal
+          type: integer
+        goldGreaterThanOrEqual:
+          description: Gold for adventure greater than or equal
+          type: integer
+        goldLessThanOrEqual:
+          description: Gold for adventure greater than or equal
+          type: integer
+        enemyNameLike:
+          description: Enemy name fragment
+          type: string
+    FightActionRequest:
+      type: object
+      required:
+        - characterId
+        - action
+      properties:
+        characterId:
+          description: Character id
+          type: integer
+          format: int64
+        action:
+          description: Action that character performs in fight (ElementAction)
+          type: string
+        skillId:
+          description: Skill id (when using skill)
+          type: integer
+          format: int64
+    ItemCreateRequest:
+      type: object
+      required:
+        - name
+        - type
+        - power
+        - price
+      properties:
+        name:
+          description: Item name
+          type: string
+        type:
+          description: Item type (enum ItemType)
+          $ref: '#/components/schemas/ItemType'
+        power:
+          description: Item attribute power
+          type: integer
+        price:
+          description: Item price
+          type: integer
+    ItemSearchRequest:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        idNotIn:
+          description: Item id not in
+          type: array
+          items:
+            type: integer
+            format: int64
+        nameLike:
+          description: Item name fragment
+          type: string
+        typeIn:
+          description: Item type in (enum ItemType)
+          type: array
+          items:
+            $ref: '#/components/schemas/ItemType'
+        powerGreaterThanOrEqual:
+          description: Item attribute power greater or equals
+          type: integer
+        powerLessThanOrEqual:
+          description: Item attribute power less or equals
+          type: integer
+        priceGreaterThanOrEqual:
+          description: Item price greater or equals
+          type: integer
+        priceLessThanOrEqual:
+          description: Item price less or equals
+          type: integer
+    WorkCreateRequest:
+      type: object
+      required:
+        - name
+        - wage
+        - workMinutes
+      properties:
+        name:
+          description: Work name
+          type: string
+        wage:
+          description: Gold earned for work
+          type: integer
+        workMinutes:
+          description: Work length in minutes
+          type: integer
+    WorkSearchRequest:
+      type: object
+      properties:
+        pagination:
+          $ref: '#/components/schemas/Pagination'
+        nameLike:
+          description: Item name fragment
+          type: string
+        wageGreaterThanOrEqual:
+          description: Item attribute power greater or equals
+          type: integer
+        wageLessThanOrEqual:
+          description: Item attribute power less or equals
+          type: integer
+        workMinutesGreaterThanOrEqual:
+          description: Item price greater or equals
+          type: integer
+        workMinutesLessThanOrEqual:
+          description: Item price less or equals
+          type: integer
+    CharacterLite:
+      type: object
+      required:
+        - id
+        - name
+        - race
+        - sex
+        - characterClass
+        - artwork
+      properties:
+        id:
+          description: Character id
+          type: integer
+          format: int64
+        name:
+          description: Character name
+          type: string
+        race:
+          description: Character race
+          type: string
+        sex:
+          description: Character sex
+          type: string
+        characterClass:
+          description: Character class
+          type: string
+        artwork:
+          description: Character artwork
+          type: string
+    CharacterBasics:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CharacterBasic'
+    CharacterBasic:
+      allOf:
+        - $ref: '#/components/schemas/CharacterLite'
+        - type: object
+          required:
+            - statistics
+            - occupation
+          properties:
+            statistics:
+              $ref: '#/components/schemas/StatisticsLite'
+            occupation:
+              $ref: '#/components/schemas/OccupationBasic'
+    CharacterDetails:
+      allOf:
+        - $ref: '#/components/schemas/CharacterBasic'
+        - type: object
+          properties:
+            skills:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkillDetails'
+            equipment:
+              $ref: '#/components/schemas/EquipmentDetails'
+    EquipmentDetails:
+      description: Detailed info about equipment
+      type: object
+      required:
+        - id
+        - gold
+        - healthPotions
+      properties:
+        id:
+          description: Equipment id
+          type: integer
+          format: int64
+        gold:
+          description: Character gold
+          type: integer
+        armor:
+          description: Info about character armor
+          $ref: '#/components/schemas/ItemLite'
+        weapon:
+          description: Info about character weapon
+          $ref: '#/components/schemas/ItemLite'
+        healthPotions:
+          description: Character potions
+          type: integer
+    StatisticsLite:
+      type: object
+      required:
+        - currentXp
+        - xpToNextLevel
+        - currentLevel
+        - maxHp
+        - currentHp
+        - maxMana
+        - currentMana
+      properties:
+        currentXp:
+          description: Character current xp
+          type: integer
+        xpToNextLevel:
+          description: Character xp to next level
+          type: integer
+        currentLevel:
+          description: Character current level
+          type: integer
+        maxHp:
+          description: Character max HP
+          type: integer
+        currentHp:
+          description: Character current HP
+          type: integer
+        maxMana:
+          description: Character max mana
+          type: integer
+        currentMana:
+          description: Character current mana
+          type: integer
+    StatisticsDetails:
+      allOf:
+        - $ref: '#/components/schemas/StatisticsLite'
+        - type: object
+          required:
+            - damage
+            - magicDamage
+            - armor
+            - dodgeChance
+            - criticalChance
+            - freeStatisticPoints
+            - strength
+            - dexterity
+            - constitution
+            - intelligence
+          properties:
+            damage:
+              description: Character damage
+              type: integer
+            magicDamage:
+              description: Character magic damage
+              type: integer
+            armor:
+              description: Character armor
+              type: integer
+            dodgeChance:
+              description: Character dodge chance
+              type: number
+              format: float
+            criticalChance:
+              description: Character critical chance
+              type: number
+              format: float
+            freeStatisticPoints:
+              description: Character free statistic points
+              type: integer
+            strength:
+              description: Character strength
+              type: integer
+            dexterity:
+              description: Character dexterity
+              type: integer
+            constitution:
+              description: Character constitution
+              type: integer
+            intelligence:
+              description: Character intelligence
+              type: integer
+    OccupationBasic:
+      type: object
+      properties:
+        finishTime:
+          description: Occupation finish time
+          type: string
+        occupationType:
+          description: Character occupation
+          type: string
+    EnemyLite:
+      type: object
+      required:
+        - id
+        - name
+        - hp
+        - mana
+        - damage
+        - numberOfPotions
+      properties:
+        id:
+          description: Enemy id
+          type: integer
+          format: int64
+        name:
+          description: Enemy name
+          type: string
+    EnemyLites:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/EnemyLite'
+    EnemyBasic:
+      description: "Basic info about enemy"
+      allOf:
+        - $ref: '#/components/schemas/EnemyLite'
+        - type: object
+          required:
+            - hp
+            - mana
+            - damage
+            - skillLevel
+            - numberOfPotions
+            - skill
+          properties:
+            hp:
+              description: Enemy max hp
+              type: integer
+            mana:
+              description: Enemy max mana
+              type: integer
+            damage:
+              description: Enemy damage
+              type: integer
+            skillLevel:
+              description: Enemy skill level
+              type: integer
+            numberOfPotions:
+              description: Enemy number of potions
+              type: integer
+            skill:
+              $ref: '#/components/schemas/SkillBasic'
+    Page:
+      type: object
+      description: Page info
+      properties:
+        number:
+          type: integer
+        size:
+          type: integer
+        numberOfElements:
+          type: integer
+        totalElements:
+          type: integer
+        content:
+          type: boolean
+        first:
+          type: boolean
+        last:
+          type: boolean
+    SkillLite:
+      type: object
+      required:
+        - id
+        - name
+      properties:
+        id:
+          description: Skill id
+          type: integer
+          format: int64
+        name:
+          description: Skill name
+          type: string
+    SkillLites:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/SkillLite'
+    SkillBasic:
+      description: "Basic info about skill"
+      allOf:
+        - $ref: '#/components/schemas/SkillLite'
+        - type: object
+          required:
+            - type
+            - multiplier
+            - characterClass
+            - skillTraining
+          properties:
+            type:
+              description: Skill type
+              type: string
+            effect:
+              description: Skill effect
+              type: string
+            characterClass:
+              description: Character class skill is for
+              type: string
+            skillTraining:
+              $ref: '#/components/schemas/SkillTraining'
+    SkillTraining:
+      type: object
+      required:
+        - goldCost
+        - statisticPointsCost
+      properties:
+        goldCost:
+          description: Skill learn gold cost
+          type: integer
+        statisticPointsCost:
+          description: Skill learn statistics points cost
+          type: integer
+    SkillBasicPage:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          required:
+            - content
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/SkillBasic'
+    SkillDetails:
+      allOf:
+        - $ref: '#/components/schemas/SkillBasic'
+        - type: object
+          required:
+            - multiplier
+          properties:
+            manaCost:
+              description: Skill mana cost
+              type: integer
+            multiplier:
+              description: Skill multiplier
+              type: number
+              format: float
+            multiplierPerLevel:
+              description: Multiplier to add per level
+              type: number
+              format: float
+            effectDuration:
+              description: Skill effect duration in turns
+              type: integer
+            effectMultiplier:
+              description: Effect multiplier
+              type: number
+              format: float
+            effectDurationPerLevel:
+              description: Skill effect duration to add per level
+              type: integer
+            effectMultiplierPerLevel:
+              description: Effect multiplier to add per level
+              type: number
+              format: float
+    CharacterSkillBasic:
+      type: object
+      description: "Info about character skill"
+      required:
+        - skill
+        - level
+      properties:
+        skill:
+          $ref: '#/components/schemas/SkillBasic'
+        level:
+          description: Skill current level
+          type: integer
+    CharacterSkillBasics:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/CharacterSkillBasic'
+    AdventureLite:
+      type: object
+      required:
+        - id
+        - name
+        - adventureTimeInMinutes
+      properties:
+        id:
+          description: Adventure id
+          type: integer
+          format: int64
+        name:
+          description: Adventure name
+          type: string
+        adventureTimeInMinutes:
+          description: Adventure time in minutes
+          type: integer
+    AdventureBasic:
+      allOf:
+        - $ref: '#/components/schemas/AdventureLite'
+        - type: object
+          required:
+            - xpForAdventure
+            - goldForAdventure
+            - enemy
+          properties:
+            xpForAdventure:
+              description: XP from adventure
+              type: integer
+            goldForAdventure:
+              description: Gold from adventure
+              type: integer
+            enemy:
+              $ref: '#/components/schemas/EnemyLite'
+    AdventureBasicPage:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          required:
+            - content
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/AdventureBasic'
+    AdventureDetails:
+      allOf:
+        - $ref: '#/components/schemas/AdventureBasic'
+        - type: object
+          properties:
+            enemy:
+              $ref: '#/components/schemas/EnemyBasic'
+    FightEffectLite:
+      type: object
+      description: Necessary info about fight effect
+      required:
+        - id
+        - skillEffect
+        - duration
+      properties:
+        id:
+          description: Fight id
+          type: integer
+          format: int64
+        skillEffect:
+          description: Effect for each turn
+          type: string
+        duration:
+          description: How many turns effect will last
+          type: integer
+        playerEffect:
+          description: Is effect on player?
+          type: boolean
+    FightLite:
+      type: object
+      description: Necessary info about fight
+      required:
+        - id
+        - isActive
+      properties:
+        id:
+          description: Fight id
+          type: integer
+          format: int64
+        enemyCurrentHp:
+          description: Enemy current hp in fight
+          type: integer
+        enemyCurrentMana:
+          description: Enemy current mana in fight
+          type: integer
+        active:
+          description: Is fight active
+          type: boolean
+    FightDetails:
+      allOf:
+        - $ref: '#/components/schemas/FightLite'
+        - type: object
+          description: Detailed info about fight
+          required:
+            - content
+          properties:
+            enemy:
+              $ref: '#/components/schemas/EnemyBasic'
+            fightEffects:
+              type: array
+              items:
+                $ref: '#/components/schemas/FightEffectLite'
+    FightActionResponse:
+      type: object
+      description: Info sent during fight
+      properties:
+        fight:
+          $ref: '#/components/schemas/FightDetails'
+        enemyHit:
+          description: Did enemy hit player
+          type: boolean
+        enemyDamage:
+          description: Damage that enemy dealt to player
+          type: integer
+        enemyAction:
+          description: Enemy action
+          $ref: '#/components/schemas/ElementAction'
+        playerDamage:
+          description: Damage that player dealt to enemy
+          type: integer
+        playerCurrentHp:
+          description: Current player character HP
+          type: integer
+        playerCurrentMana:
+          description: Current player character mana
+          type: integer
+        playerCriticalStrike:
+          description: Did player attack deal critical damage
+          type: boolean
+        playerPotions:
+          description: Player character number of potions
+          type: integer
+        playerWon:
+          description: Did fight end and player won
+          type: boolean
+    ItemLite:
+      type: object
+      description: Necessary info about item
+      required:
+        - id
+        - name
+        - type
+        - power
+        - price
+      properties:
+        id:
+          description: Item id
+          type: integer
+          format: int64
+        name:
+          description: Item name
+          type: string
+        type:
+          description: Item type (enum ItemType)
+          type: string
+        power:
+          description: Item attribute power
+          type: integer
+        price:
+          description: Item price
+          type: integer
+    ItemLitePage:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          required:
+            - content
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/ItemLite'
+    PotionLite:
+      type: object
+      description: Info about potion
+      required:
+        - healPercent
+        - price
+      properties:
+        healPercent:
+          description: Potion heal percent
+          type: integer
+        price:
+          description: Potion price
+          type: integer
+    WorkLite:
+      type: object
+      description: Info about potion
+      required:
+        - id
+        - name
+        - wage
+        - workMinutes
+      properties:
+        id:
+          description: Work id
+          type: integer
+          format: int64
+        name:
+          description: Work name
+          type: string
+        wage:
+          description: Gold earned in work
+          type: integer
+        workMinutes:
+          description: Work length in minutes
+          type: integer
+    WorkLitePage:
+      allOf:
+        - $ref: '#/components/schemas/Page'
+        - type: object
+          required:
+            - content
+          properties:
+            content:
+              type: array
+              items:
+                $ref: '#/components/schemas/WorkLite'

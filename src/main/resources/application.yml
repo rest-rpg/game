@@ -1,0 +1,19 @@
+spring:
+  datasource:
+    password: 'zaq1@WSX3'
+    username: root
+    url: jdbc:mysql://localhost:3306/rest_rpg?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+  jpa:
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
+    hibernate:
+      ddl-auto: validate
+    database: mysql
+  sql:
+    init:
+      platform: mysql
+server:
+  error:
+    include-message: always
+logging.level.org.springframework.security: DEBUG
