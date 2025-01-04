@@ -16,7 +16,7 @@ import org.springframework.http.HttpStatus
 
 class ItemControllerTest extends TestBase {
 
-    def baseUrl = "/item"
+    def baseUrl = "/game/item"
     def searchUrl = baseUrl + "/search"
     def buyItemUrl = { long itemId, long characterId -> baseUrl + "/" + itemId + "/buy/" + characterId }
     def buyPotionUrl = { long characterId -> baseUrl + "/potion/buy/" + characterId }

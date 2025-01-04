@@ -15,7 +15,7 @@ import java.time.LocalDateTime
 
 class AdventureControllerTest extends TestBase {
 
-    def baseUrl = "/adventure"
+    def baseUrl = "/game/adventure"
     def adventureUrl = { long adventureId -> baseUrl + "/" + adventureId }
     def searchUrl = baseUrl + "/search"
     def startAdventureUrl = { long adventureId, long characterId -> baseUrl + "/" + adventureId + "/start/" + characterId }

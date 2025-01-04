@@ -10,7 +10,7 @@
     </parent>
     <groupId>com.michael1099</groupId>
     <artifactId>rest_rpg-service</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>rest_rpg-service</name>
     <description>Game service</description>
     <properties>
@@ -182,6 +182,8 @@
                                 <delegatePattern>true</delegatePattern>
                                 <interfaceOnly>true</interfaceOnly>
                                 <useJakartaEe>true</useJakartaEe>
+                                <useSpringBoot3>true</useSpringBoot3>
+                                <useTags>true</useTags>
                                 <dateLibrary>custom</dateLibrary>
                             </configOptions>
                             <typeMappings>

@@ -24,7 +24,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 
 class CharacterControllerTest extends TestBase {
 
-    def baseUrl = "/character"
+    def baseUrl = "/game/character"
     def imageUrl = { String characterArtwork -> baseUrl + "/image/" + characterArtwork }
     def thumbnailUrl = { String characterArtwork -> baseUrl + "/thumbnail/" + characterArtwork }
     def artworksUrl = baseUrl + "/artworks"

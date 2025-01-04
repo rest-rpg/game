@@ -12,7 +12,7 @@ import org.springframework.http.HttpStatus
 
 class EnemyControllerTest extends TestBase {
 
-    def baseUrl = "/enemy"
+    def baseUrl = "/game/enemy"
 
     @Autowired
     SkillServiceHelper skillServiceHelper

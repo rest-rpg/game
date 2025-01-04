@@ -13,7 +13,7 @@ import java.time.LocalDateTime
 
 class WorkControllerTest extends TestBase {
 
-    def baseUrl = "/work"
+    def baseUrl = "/game/work"
     def searchUrl = baseUrl + "/search"
     def startWorkUrl = { long workId, long characterId -> baseUrl + "/" + workId + "/start/" + characterId }
     def endWorkUrl = { long workId -> baseUrl + "/" + workId + "/end" }

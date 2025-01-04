@@ -2,28 +2,33 @@ openapi: 3.0.3
 info:
   title: RPG API
   description: API for RPG REST game.
-  version: '0.1'
+  version: '1.0'
 servers:
   - url: http://localhost:8080
+tags:
+  - name: adventure
+    description: Adventure API
+  - name: character
+    description: Character API
+  - name: enemy
+    description: Enemy API
+  - name: fight
+    description: Fight API
+  - name: item
+    description: Item API
+  - name: skill
+    description: Skill API
+  - name: statistics
+    description: Statistics API
+  - name: work
+    description: Work API
 paths:
-  /users:
-    get:
-      summary: Returns a list of users.
-      operationId: getUsers
-      x-preauth: "hasAuthority('ADMIN')"
-      responses:
-        '200':
-          description: A JSON array of user names
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/UserLite'
-  /character:
+  /game/character:
     post:
       summary: Creates a character.
       operationId: createCharacter
+      tags:
+        - character
       x-preauth: "hasAuthority('USER')"
       requestBody:
         required: true
@@ -38,10 +43,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CharacterLite'
-  /character/image/{characterArtwork}:
+  /game/character/image/{characterArtwork}:
     get:
       summary: Get full sized character artwork
       operationId: getCharacterArtwork
+      tags:
+        - character
       parameters:
         - name: characterArtwork
           in: path
@@ -57,10 +64,12 @@ paths:
               schema:
                 type: string
                 format: binary
-  /character/thumbnail/{characterArtwork}:
+  /game/character/thumbnail/{characterArtwork}:
     get:
       summary: Get thumbnail artwork
       operationId: getCharacterArtworkThumbnail
+      tags:
+        - character
       parameters:
         - name: characterArtwork
           in: path
@@ -76,10 +85,12 @@ paths:
               schema:
                 type: string
                 format: binary
-  /character/artworks:
+  /game/character/artworks:
     get:
       summary: Get enum artwork
       operationId: getCharacterArtworkEnum
+      tags:
+        - character
       x-preauth: "hasAuthority('USER')"
       responses:
         '200':
@@ -90,10 +101,12 @@ paths:
                 type: array
                 items:
                   type: string
-  /character/user-characters:
+  /game/character/user-characters:
     get:
       summary: Get user characters
       operationId: getUserCharacters
+      tags:
+        - character
       x-preauth: "hasAuthority('USER')"
       responses:
         '200':
@@ -102,10 +115,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CharacterBasics'
-  /character/{characterId}:
+  /game/character/{characterId}:
     get:
       summary: Get user character by id
       operationId: getUserCharacter
+      tags:
+        - character
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -122,10 +137,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CharacterDetails'
-  /statistics/{characterId}:
+  /game/statistics/{characterId}:
     get:
       summary: Get user character statistics by character id
       operationId: getStatistics
+      tags:
+        - statistics
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -142,10 +159,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatisticsDetails'
-  /statistics/{characterId}/train:
+  /game/statistics/{characterId}/train:
     post:
       summary: Train statistics
       operationId: trainCharacter
+      tags:
+        - statistics
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -168,10 +187,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatisticsDetails'
-  /enemy:
+  /game/enemy:
     get:
       summary: Get all enemies
       operationId: getEnemies
+      tags:
+        - enemy
       x-preauth: "hasAuthority('ADMIN')"
       responses:
         '200':
@@ -183,6 +204,8 @@ paths:
     post:
       summary: Creates an enemy.
       operationId: createEnemy
+      tags:
+        - enemy
       x-preauth: "hasAuthority('ADMIN')"
       requestBody:
         required: true
@@ -197,10 +220,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/EnemyLite'
-  /skill:
+  /game/skill:
     get:
       summary: Get all skills
       operationId: getSkills
+      tags:
+        - skill
       x-preauth: "hasAuthority('ADMIN')"
       responses:
         '200':
@@ -212,6 +237,8 @@ paths:
     post:
       summary: Creates new skill.
       operationId: createSkill
+      tags:
+        - skill
       x-preauth: "hasAuthority('ADMIN')"
       requestBody:
         required: true
@@ -226,10 +253,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SkillLite'
-  /adventure:
+  /game/adventure:
     post:
       summary: Creates new adventure.
       operationId: createAdventure
+      tags:
+        - adventure
       x-preauth: "hasAuthority('ADMIN')"
       requestBody:
         required: true
@@ -244,10 +273,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdventureLite'
-  /adventure/{adventureId}:
+  /game/adventure/{adventureId}:
     get:
       summary: Get info about adventure by adventure id
       operationId: getAdventure
+      tags:
+        - adventure
       x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
       parameters:
         - name: adventureId
@@ -267,6 +298,8 @@ paths:
     put:
       summary: Edits adventure.
       operationId: editAdventure
+      tags:
+        - adventure
       x-preauth: "hasAuthority('ADMIN')"
       parameters:
         - name: adventureId
@@ -292,6 +325,8 @@ paths:
     delete:
       summary: Deletes adventure.
       operationId: deleteAdventure
+      tags:
+        - adventure
       x-preauth: "hasAuthority('ADMIN')"
       parameters:
         - name: adventureId
@@ -308,10 +343,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdventureLite'
-  /adventure/{adventureId}/start/{characterId}:
+  /game/adventure/{adventureId}/start/{characterId}:
     get:
       summary: Start adventure with character
       operationId: startAdventure
+      tags:
+        - adventure
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: adventureId
@@ -335,10 +372,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdventureLite'
-  /adventure/{characterId}/end:
+  /game/adventure/{characterId}/end:
     get:
       summary: End adventure with character
       operationId: endAdventure
+      tags:
+        - adventure
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -355,10 +394,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdventureLite'
-  /adventure/search:
+  /game/adventure/search:
     post:
       summary: Search adventures.
       operationId: findAdventures
+      tags:
+        - adventure
       x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
       requestBody:
         required: true
@@ -373,10 +414,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/AdventureBasicPage'
-  /skill/search:
+  /game/skill/search:
     post:
       summary: Search skills.
       operationId: findSkills
+      tags:
+        - skill
       x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
       requestBody:
         required: true
@@ -391,10 +434,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SkillBasicPage'
-  /skill/{skillId}:
+  /game/skill/{skillId}:
     get:
       summary: Get skill by skill id
       operationId: getSkill
+      tags:
+        - skill
       x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
       parameters:
         - name: skillId
@@ -411,10 +456,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SkillDetails'
-  /skill/character/{characterId}:
+  /game/skill/character/{characterId}:
     get:
       summary: Info about character skills
       operationId: getCharacterSkills
+      tags:
+        - skill
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -431,10 +478,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CharacterSkillBasics'
-  /skill/{skillId}/learn/{characterId}:
+  /game/skill/{skillId}/learn/{characterId}:
     get:
       summary: Learn skill
       operationId: learnSkill
+      tags:
+        - skill
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: skillId
@@ -458,10 +507,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/SkillLite'
-  /fight/{characterId}:
+  /game/fight/{characterId}:
     get:
       summary: Get fight by character id
       operationId: getFight
+      tags:
+        - fight
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -478,10 +529,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FightDetails'
-  /fight:
+  /game/fight:
     post:
       summary: Fight action.
       operationId: performActionInFight
+      tags:
+        - fight
       x-preauth: "hasAuthority('USER')"
       requestBody:
         required: true
@@ -496,10 +549,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/FightActionResponse'
-  /item:
+  /game/item:
     post:
       summary: Create item.
       operationId: createItem
+      tags:
+        - item
       x-preauth: "hasAuthority('ADMIN')"
       requestBody:
         required: true
@@ -514,10 +569,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ItemLite'
-  /item/search:
+  /game/item/search:
     post:
       summary: Search items.
       operationId: findItems
+      tags:
+        - item
       x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
       requestBody:
         required: true
@@ -532,10 +589,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ItemLitePage'
-  /item/{itemId}/buy/{characterId}:
+  /game/item/{itemId}/buy/{characterId}:
     get:
       summary: Buy item
       operationId: buyItem
+      tags:
+        - item
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: itemId
@@ -559,10 +618,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/ItemLite'
-  /item/potion/buy/{characterId}:
+  /game/item/potion/buy/{characterId}:
     get:
       summary: Buy potion
       operationId: buyPotion
+      tags:
+        - item
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -575,10 +636,12 @@ paths:
       responses:
         '204':
           description: No content
-  /item/potion/info:
+  /game/item/potion/info:
     get:
       summary: Get info about potions
       operationId: getPotionInfo
+      tags:
+        - item
       x-preauth: "hasAuthority('USER')"
       responses:
         '200':
@@ -587,10 +650,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/PotionLite'
-  /item/potion/use/{characterId}:
+  /game/item/potion/use/{characterId}:
     get:
       summary: Heal character out of combat
       operationId: usePotion
+      tags:
+        - item
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -607,10 +672,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/StatisticsLite'
-  /work:
+  /game/work:
     post:
       summary: Creates new work.
       operationId: createWork
+      tags:
+        - work
       x-preauth: "hasAuthority('ADMIN')"
       requestBody:
         required: true
@@ -625,10 +692,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkLite'
-  /work/search:
+  /game/work/search:
     post:
       summary: Search works.
       operationId: findWorks
+      tags:
+        - work
       x-preauth: "hasAnyAuthority('ADMIN', 'USER')"
       requestBody:
         required: true
@@ -643,10 +712,12 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/WorkLitePage'
-  /work/{workId}/start/{characterId}:
+  /game/work/{workId}/start/{characterId}:
     get:
       summary: Start work with character
       operationId: startWork
+      tags:
+        - work
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: workId
@@ -666,10 +737,12 @@ paths:
       responses:
         '204':
           description: No content
-  /work/{characterId}/end:
+  /game/work/{characterId}/end:
     get:
       summary: End work with character
       operationId: endWork
+      tags:
+        - work
       x-preauth: "hasAuthority('USER')"
       parameters:
         - name: characterId
@@ -724,6 +797,7 @@ components:
         - ITEM_ALREADY_BOUGHT
         - CHARACTER_HP_FULL
     ElementEvent:
+      description: Event
       type: string
       enum:
         - PLAYER_HEALTH_0_20
@@ -737,6 +811,7 @@ components:
         - ENEMY_HEALTH_60_80
         - ENEMY_HEALTH_80_100
     ElementAction:
+      description: Action
       type: string
       enum:
         - NORMAL_ATTACK
@@ -783,6 +858,7 @@ components:
         - TRAINING
         - ADVENTURE
     ItemType:
+      description: Item type (enum ItemType)
       type: string
       enum:
         - WEAPON
@@ -823,7 +899,6 @@ components:
           description: Character artwork
           type: string
         statistics:
-          description: Character statistics
           $ref: '#/components/schemas/StatisticsUpdateRequest'
     Pagination:
       type: object
@@ -888,16 +963,15 @@ components:
         - priority
       properties:
         event:
-          description: Event
           $ref: '#/components/schemas/ElementEvent'
         action:
-          description: Action
           $ref: '#/components/schemas/ElementAction'
         priority:
           description: Action priority
           type: integer
     StatisticsUpdateRequest:
       type: object
+      description: Character statistics update request
       required:
         - strength
         - dexterity
@@ -1087,7 +1161,6 @@ components:
           description: Item name
           type: string
         type:
-          description: Item type (enum ItemType)
           $ref: '#/components/schemas/ItemType'
         power:
           description: Item attribute power
@@ -1237,10 +1310,8 @@ components:
           description: Character gold
           type: integer
         armor:
-          description: Info about character armor
           $ref: '#/components/schemas/ItemLite'
         weapon:
-          description: Info about character weapon
           $ref: '#/components/schemas/ItemLite'
         healthPotions:
           description: Character potions
@@ -1642,7 +1713,6 @@ components:
           description: Damage that enemy dealt to player
           type: integer
         enemyAction:
-          description: Enemy action
           $ref: '#/components/schemas/ElementAction'
         playerDamage:
           description: Damage that player dealt to enemy

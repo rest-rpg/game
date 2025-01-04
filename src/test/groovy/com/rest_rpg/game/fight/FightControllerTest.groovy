@@ -22,7 +22,7 @@ import org.springframework.http.HttpStatus
 
 class FightControllerTest extends TestBase {
 
-    def baseUrl = "/fight"
+    def baseUrl = "/game/fight"
     def fightUrl = { long characterId -> baseUrl + "/" + characterId }
 
     @Autowired

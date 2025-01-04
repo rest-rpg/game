@@ -15,7 +15,7 @@ import org.springframework.http.HttpStatus
 
 class SkillControllerTest extends TestBase {
 
-    def baseUrl = "/skill"
+    def baseUrl = "/game/skill"
     def searchUrl = baseUrl + "/search"
     def skillUrl = { long skillId -> baseUrl + "/" + skillId }
     def characterSkillsUrl = { long characterId -> baseUrl + "/character/" + characterId }

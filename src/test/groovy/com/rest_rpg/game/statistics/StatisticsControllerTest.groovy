@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus
 
 class StatisticsControllerTest extends TestBase {
 
-    def baseUrl = "/statistics"
+    def baseUrl = "/game/statistics"
     def statisticUrl = { long characterId -> baseUrl + "/" + characterId }
     def trainUrl = { long characterId -> baseUrl + "/" + characterId + "/train" }
 
