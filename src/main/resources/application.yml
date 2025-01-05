@@ -17,3 +17,8 @@ server:
   error:
     include-message: always
 logging.level.org.springframework.security: DEBUG
+token:
+  refreshTokenExpirationMs: '604800000'
+  accessTokenExpirationMs: '86400000'
+  refreshTokenCookieName: jwt
+  secretKey: 5267556B58703273357638792F423F4528482B4D6251655368566D5971337436
