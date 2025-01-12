@@ -10,13 +10,14 @@
     </parent>
     <groupId>com.michael1099</groupId>
     <artifactId>rest_rpg-service</artifactId>
-    <version>1.0.1-SNAPSHOT</version>
+    <version>1.0.2-SNAPSHOT</version>
     <name>rest_rpg-service</name>
     <description>Game service</description>
     <properties>
         <java.version>17</java.version>
         <rest_rpg.user.version>1.0.0-SNAPSHOT</rest_rpg.user.version>
         <rest_rpg.auth.version>1.1.1-SNAPSHOT</rest_rpg.auth.version>
+        <rest_rpg.common.version>1.0.0-SNAPSHOT</rest_rpg.common.version>
 
         <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
         <org.projectlombok.version>1.18.20</org.projectlombok.version>
@@ -42,6 +43,11 @@
             <groupId>com.rest_rpg.auth</groupId>
             <artifactId>auth-starter</artifactId>
             <version>${rest_rpg.auth.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.rest_rpg.common</groupId>
+            <artifactId>common</artifactId>
+            <version>${rest_rpg.common.version}</version>
         </dependency>
 
         <dependency>
