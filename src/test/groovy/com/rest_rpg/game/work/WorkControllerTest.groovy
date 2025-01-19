@@ -1,6 +1,6 @@
 package com.rest_rpg.game.work
 
-
+import com.rest_rpg.common.error.ErrorResponse
 import com.rest_rpg.game.character.CharacterServiceHelper
 import com.rest_rpg.game.configuration.TestBase
 import org.openapitools.model.ErrorCodes
@@ -77,10 +77,10 @@ class WorkControllerTest extends TestBase {
             character.occupation.setFinishTime(LocalDateTime.now().plusDays(1))
             character = characterServiceHelper.save(character)
         when:
-            def response = httpGet(startWorkUrl(work.id, character.id), Void)
+            def response = httpGet(startWorkUrl(work.id, character.id), ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.CHARACTER_IS_OCCUPIED.toString()
+            response.body.message() == ErrorCodes.CHARACTER_IS_OCCUPIED.toString()
     }
 
     def "should end work"() {
@@ -109,9 +109,9 @@ class WorkControllerTest extends TestBase {
             character.occupation.setFinishTime(LocalDateTime.now().plusDays(1))
             character = characterServiceHelper.save(character)
         when:
-            def response = httpGet(endWorkUrl(character.id), Void)
+            def response = httpGet(endWorkUrl(character.id), ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.CHARACTER_STILL_WORKING.toString()
+            response.body.message() == ErrorCodes.CHARACTER_STILL_WORKING.toString()
     }
 }

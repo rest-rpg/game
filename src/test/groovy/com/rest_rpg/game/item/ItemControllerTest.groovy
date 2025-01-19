@@ -1,5 +1,6 @@
 package com.rest_rpg.game.item
 
+import com.rest_rpg.common.error.ErrorResponse
 import com.rest_rpg.game.character.CharacterServiceHelper
 import com.rest_rpg.game.configuration.TestBase
 import com.rest_rpg.game.equipment.Equipment
@@ -51,10 +52,10 @@ class ItemControllerTest extends TestBase {
             itemServiceHelper.saveItem(name: "Item", type: ItemType.WEAPON)
             def request = ItemHelper.createRequest(name: "Item", type: ItemType.WEAPON)
         when:
-            def response = httpPost(baseUrl, request, ItemLite)
+            def response = httpPost(baseUrl, request, ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.ITEM_ALREADY_EXISTS.toString()
+            response.body.message() == ErrorCodes.ITEM_ALREADY_EXISTS.toString()
     }
 
     def "should find items"() {
@@ -112,10 +113,10 @@ class ItemControllerTest extends TestBase {
             def character = characterServiceHelper.createCharacter([equipment: Equipment.builder().gold(99).build()])
             def item1 = itemServiceHelper.saveItem(name: "Item1", type: ItemType.WEAPON, price: 100)
         when:
-            def response = httpGet(buyItemUrl(item1.id, character.id), ItemLite)
+            def response = httpGet(buyItemUrl(item1.id, character.id), ErrorResponse)
         then:
             response.status == HttpStatus.FORBIDDEN
-            response.errorMessage == ErrorCodes.NOT_ENOUGH_GOLD.toString()
+            response.body.message() == ErrorCodes.NOT_ENOUGH_GOLD.toString()
     }
 
     def "should buy potion"() {
@@ -134,10 +135,10 @@ class ItemControllerTest extends TestBase {
         given:
             def character = characterServiceHelper.createCharacter([equipment: Equipment.builder().gold(ItemService.POTION_PRICE - 1).healthPotions(0).build()])
         when:
-            def response = httpGet(buyPotionUrl(character.id), Void)
+            def response = httpGet(buyPotionUrl(character.id), ErrorResponse)
         then:
             response.status == HttpStatus.FORBIDDEN
-            response.errorMessage == ErrorCodes.NOT_ENOUGH_GOLD.toString()
+            response.body.message() == ErrorCodes.NOT_ENOUGH_GOLD.toString()
     }
 
     def "should get info about potion"() {

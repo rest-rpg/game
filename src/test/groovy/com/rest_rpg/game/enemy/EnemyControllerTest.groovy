@@ -1,5 +1,6 @@
 package com.rest_rpg.game.enemy
 
+import com.rest_rpg.common.error.ErrorResponse
 import com.rest_rpg.game.configuration.TestBase
 import com.rest_rpg.game.skill.SkillServiceHelper
 import org.openapitools.model.ElementAction
@@ -93,10 +94,10 @@ class EnemyControllerTest extends TestBase {
             def skill = skillServiceHelper.createSkill()
             def request = EnemyHelper.createEnemyCreateRequest(skill, [name: "Bolo"])
         when:
-            def response = httpPost(baseUrl, request, EnemyLite)
+            def response = httpPost(baseUrl, request, ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.ENEMY_ALREADY_EXISTS.toString()
+            response.body.message() == ErrorCodes.ENEMY_ALREADY_EXISTS.toString()
     }
 
     def "should get all enemies"() {

@@ -1,11 +1,11 @@
 package com.rest_rpg.game.statistics
 
+import com.rest_rpg.common.error.ErrorResponse
 import com.rest_rpg.game.character.CharacterServiceHelper
 import com.rest_rpg.game.configuration.TestBase
 import org.openapitools.model.ErrorCodes
 import org.openapitools.model.StatisticsDetails
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.parsing.Problem
 import org.springframework.http.HttpStatus
 
 class StatisticsControllerTest extends TestBase {
@@ -34,10 +34,10 @@ class StatisticsControllerTest extends TestBase {
         given:
             def character = characterServiceHelper.createCharacter([name: "Carl"])
         when:
-            def response = httpGet(statisticUrl(character.getId()), Problem)
+            def response = httpGet(statisticUrl(character.getId()), ErrorResponse)
         then:
             response.status == HttpStatus.NOT_FOUND
-            response.errorMessage == ErrorCodes.CHARACTER_NOT_FOUND.toString()
+            response.body.message() == ErrorCodes.CHARACTER_NOT_FOUND.toString()
             1 * userInternalClient.getUsernameFromContext() >> { character.name }
     }
 
@@ -73,9 +73,9 @@ class StatisticsControllerTest extends TestBase {
                     constitution: 10,
                     intelligence: 10)
         when:
-            def response = httpPost(trainUrl(character.getId()), request, StatisticsDetails)
+            def response = httpPost(trainUrl(character.getId()), request, ErrorResponse)
         then:
             response.status == HttpStatus.FORBIDDEN
-            response.errorMessage == ErrorCodes.NOT_ENOUGH_SKILL_POINTS.toString()
+            response.body.message() == ErrorCodes.NOT_ENOUGH_SKILL_POINTS.toString()
     }
 }

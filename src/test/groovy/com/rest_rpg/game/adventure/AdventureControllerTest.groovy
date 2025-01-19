@@ -1,5 +1,6 @@
 package com.rest_rpg.game.adventure
 
+import com.rest_rpg.common.error.ErrorResponse
 import com.rest_rpg.game.character.CharacterServiceHelper
 import com.rest_rpg.game.configuration.TestBase
 import com.rest_rpg.game.enemy.EnemyServiceHelper
@@ -8,7 +9,6 @@ import org.openapitools.model.AdventureDetails
 import org.openapitools.model.AdventureLite
 import org.openapitools.model.ErrorCodes
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.parsing.Problem
 import org.springframework.http.HttpStatus
 
 import java.time.LocalDateTime
@@ -81,10 +81,10 @@ class AdventureControllerTest extends TestBase {
         and:
             def request = AdventureHelper.createAdventureCreateRequest(enemy, [name: "Adventure 1"])
         when:
-            def response = httpPost(baseUrl, request, Problem)
+            def response = httpPost(baseUrl, request, ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.ADVENTURE_NAME_EXISTS.toString()
+            response.body.message() == ErrorCodes.ADVENTURE_NAME_EXISTS.toString()
     }
 
     def "should find adventures"() {
@@ -136,10 +136,10 @@ class AdventureControllerTest extends TestBase {
             character.occupation.setAdventure(adventure)
             character = characterServiceHelper.save(character)
         when:
-            def response = httpGet(startAdventureUrl(adventure.id, character.id), AdventureLite)
+            def response = httpGet(startAdventureUrl(adventure.id, character.id), ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.CHARACTER_IS_OCCUPIED.toString()
+            response.body.message() == ErrorCodes.CHARACTER_IS_OCCUPIED.toString()
     }
 
     def "should end adventure"() {
@@ -173,17 +173,17 @@ class AdventureControllerTest extends TestBase {
             character.occupation.fight.setActive(true)
             character = characterServiceHelper.save(character)
         when:
-            def response = httpGet(endAdventureUrl(character.id), AdventureLite)
+            def response = httpGet(endAdventureUrl(character.id), ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.FIGHT_IS_ONGOING.toString()
+            response.body.message() == ErrorCodes.FIGHT_IS_ONGOING.toString()
         when:
             character.occupation.setFinishTime(LocalDateTime.now().plusDays(1))
             character.occupation.fight.setActive(false)
             character = characterServiceHelper.save(character)
-            response = httpGet(endAdventureUrl(character.id), AdventureLite)
+            response = httpGet(endAdventureUrl(character.id), ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.CHARACTER_STILL_ON_ADVENTURE.toString()
+            response.body.message() == ErrorCodes.CHARACTER_STILL_ON_ADVENTURE.toString()
     }
 }

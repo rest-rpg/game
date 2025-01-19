@@ -1,5 +1,6 @@
 package com.rest_rpg.game.character
 
+import com.rest_rpg.common.error.ErrorResponse
 import com.rest_rpg.game.character.model.CharacterArtwork
 import com.rest_rpg.game.configuration.TestBase
 import com.rest_rpg.game.fight.model.Fight
@@ -14,7 +15,6 @@ import org.openapitools.model.CharacterLite
 import org.openapitools.model.CharacterSex
 import org.openapitools.model.ErrorCodes
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.beans.factory.parsing.Problem
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
@@ -59,23 +59,23 @@ class CharacterControllerTest extends TestBase {
             characterServiceHelper.createCharacter([name: "Carl"])
             def request = CharacterHelper.createCharacterCreateRequest(name: "Carl")
         when:
-            def response = httpPost(baseUrl, request, Problem)
+            def response = httpPost(baseUrl, request, ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.CHARACTER_ALREADY_EXISTS.toString()
+            response.body.message() == ErrorCodes.CHARACTER_ALREADY_EXISTS.toString()
         when:
             request = CharacterHelper.createCharacterCreateRequest(
                     statistics: StatisticsHelper.createStatisticsUpdateRequest(strength: 100))
-            response = httpPost(baseUrl, request, CharacterLite)
+            response = httpPost(baseUrl, request, ErrorResponse)
         then:
             response.status == HttpStatus.FORBIDDEN
-            response.errorMessage == ErrorCodes.NOT_ENOUGH_SKILL_POINTS.toString()
+            response.body.message() == ErrorCodes.NOT_ENOUGH_SKILL_POINTS.toString()
         when:
             request = CharacterHelper.createCharacterCreateRequest(characterClass: "Demon")
-            response = httpPost(baseUrl, request, CharacterLite)
+            response = httpPost(baseUrl, request, ErrorResponse)
         then:
             response.status == HttpStatus.NOT_FOUND
-            response.errorMessage == ErrorCodes.ENUM_VALUE_NOT_FOUND.toString()
+            response.body.message() == ErrorCodes.ENUM_VALUE_NOT_FOUND.toString()
     }
 
     def "should get character image"() {
@@ -144,10 +144,10 @@ class CharacterControllerTest extends TestBase {
         given:
             def character = characterServiceHelper.createCharacter([name: "Carl"])
         when:
-            def response = httpGet(userCharacterUrl(character.getId()), Problem)
+            def response = httpGet(userCharacterUrl(character.getId()), ErrorResponse)
         then:
             response.status == HttpStatus.NOT_FOUND
-            response.errorMessage == ErrorCodes.CHARACTER_NOT_FOUND.toString()
+            response.body.message() == ErrorCodes.CHARACTER_NOT_FOUND.toString()
             1 * userInternalClient.getUsernameFromContext() >> { character.name }
     }
 }

@@ -1,5 +1,6 @@
 package com.rest_rpg.game.skill
 
+import com.rest_rpg.common.error.ErrorResponse
 import com.rest_rpg.game.character.CharacterServiceHelper
 import com.rest_rpg.game.configuration.TestBase
 import com.rest_rpg.game.helpers.DeleteServiceHelper
@@ -49,10 +50,10 @@ class SkillControllerTest extends TestBase {
             skillServiceHelper.createSkill(name: "Skill")
             def request = SkillHelper.createSkillCreateRequest(name: "Skill")
         when:
-            def response = httpPost(baseUrl, request, SkillLite)
+            def response = httpPost(baseUrl, request, ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.SKILL_ALREADY_EXISTS.toString()
+            response.body.message() == ErrorCodes.SKILL_ALREADY_EXISTS.toString()
     }
 
     def "should find skills"() {
@@ -141,9 +142,9 @@ class SkillControllerTest extends TestBase {
             skillServiceHelper.createSkill(name: "Skill")
             def character = characterServiceHelper.createCharacter([characterClass: CharacterClass.MAGE])
         when:
-            def response = httpGet(skillLearnUrl(skill1.id, character.id), SkillLite)
+            def response = httpGet(skillLearnUrl(skill1.id, character.id), ErrorResponse)
         then:
             response.status == HttpStatus.CONFLICT
-            response.errorMessage == ErrorCodes.SKILL_CHARACTER_CLASS_MISMATCH.toString()
+            response.body.message() == ErrorCodes.SKILL_CHARACTER_CLASS_MISMATCH.toString()
     }
 }

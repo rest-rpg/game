@@ -12,7 +12,6 @@ class Response<T> {
     private MockHttpServletResponse response
     HttpStatus status
     T body
-    String errorMessage
 
     Response(MockHttpServletResponse response, ObjectMapper objectMapper, Class<T> requiredType) {
         this.response = response
@@ -21,6 +20,5 @@ class Response<T> {
         if (response.contentType != null) {
             this.body = objectMapper.readValue(response.contentAsString, requiredType)
         }
-        this.errorMessage = response.errorMessage
     }
 }
