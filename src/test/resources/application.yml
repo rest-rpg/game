@@ -33,3 +33,6 @@ default-admin:
   username: admin
   email: admin@gmail.com
   password: 12345678
+feign:
+  user:
+    url: http://localhost:8081
