@@ -15,13 +15,11 @@ class StatisticsHelper {
                 intelligence: 3
         ]
         args << customArgs
-        def request = new StatisticsUpdateRequest()
-        request.strength(args.strength)
-        request.dexterity(args.dexterity)
-        request.constitution(args.constitution)
-        request.intelligence(args.intelligence)
-
-        return request
+        new StatisticsUpdateRequest()
+                .strength(args.strength)
+                .dexterity(args.dexterity)
+                .constitution(args.constitution)
+                .intelligence(args.intelligence)
     }
 
     static Statistics statistics(Map customArgs = [:]) {
@@ -94,8 +92,7 @@ class StatisticsHelper {
         true
     }
 
-    static boolean compare(Statistics statistics, StatisticsUpdateRequest dto, String characterRace) {
-        CharacterRace race = CharacterRace.valueOf(characterRace)
+    static boolean compare(Statistics statistics, StatisticsUpdateRequest dto, CharacterRace race) {
         assert statistics.dodgeChance == criticalDodgeChance(dto.dexterity)
         assert statistics.criticalChance == criticalDodgeChance(dto.dexterity)
         assert statistics.maxHp == dto.constitution * Statistics.HP_MULTIPLIER

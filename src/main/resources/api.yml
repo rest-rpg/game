@@ -43,64 +43,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/CharacterLite'
-  /game/character/image/{characterArtwork}:
-    get:
-      summary: Get full sized character artwork
-      operationId: getCharacterArtwork
-      tags:
-        - character
-      parameters:
-        - name: characterArtwork
-          in: path
-          required: true
-          description: Artwork enum
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            image/jpeg:
-              schema:
-                type: string
-                format: binary
-  /game/character/thumbnail/{characterArtwork}:
-    get:
-      summary: Get thumbnail artwork
-      operationId: getCharacterArtworkThumbnail
-      tags:
-        - character
-      parameters:
-        - name: characterArtwork
-          in: path
-          required: true
-          description: Artwork enum
-          schema:
-            type: string
-      responses:
-        '200':
-          description: OK
-          content:
-            image/jpeg:
-              schema:
-                type: string
-                format: binary
-  /game/character/artworks:
-    get:
-      summary: Get enum artwork
-      operationId: getCharacterArtworkEnum
-      tags:
-        - character
-      x-preauth: "hasAuthority('USER')"
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  type: string
   /game/character/user-characters:
     get:
       summary: Get user characters
@@ -775,7 +717,6 @@ components:
         - NOT_ENOUGH_SKILL_POINTS
         - GET_IMAGE
         - IMAGE_DOES_NOT_EXIST
-        - ENUM_VALUE_NOT_FOUND
         - ENEMY_ALREADY_EXISTS
         - ENEMY_DOES_NOT_EXIST
         - SKILL_NOT_FOUND
@@ -858,11 +799,31 @@ components:
         - TRAINING
         - ADVENTURE
     ItemType:
-      description: Item type (enum ItemType)
+      description: Item type
       type: string
       enum:
         - WEAPON
         - ARMOR
+    CharacterArtwork:
+      description: Image names enum (lower_case.jpg format)
+      type: string
+      enum:
+        - HUMAN_MALE_1
+        - HUMAN_MALE_2
+        - HUMAN_MALE_3
+        - HUMAN_FEMALE_1
+        - HUMAN_FEMALE_2
+        - ELF_MALE_1
+        - ELF_MALE_2
+        - ELF_MALE_3
+        - ELF_FEMALE_1
+        - ELF_FEMALE_2
+        - DWARF_MALE_1
+        - DWARF_MALE_2
+        - DWARF_MALE_3
+        - DWARF_FEMALE_1
+        - DWARF_FEMALE_2
+        - DWARF_FEMALE_3
     UserLite:
       type: object
       required:
@@ -887,17 +848,13 @@ components:
           description: Character name
           type: string
         race:
-          description: HUMAN/ELF/DWARF
-          type: string
+          $ref: '#/components/schemas/CharacterRace'
         sex:
-          description: MALE/FEMALE
-          type: string
+          $ref: '#/components/schemas/CharacterSex'
         characterClass:
-          description: WARRIOR/ROGUE/MAGE
-          type: string
+          $ref: '#/components/schemas/CharacterClass'
         artwork:
-          description: Character artwork
-          type: string
+          $ref: '#/components/schemas/CharacterArtwork'
         statistics:
           $ref: '#/components/schemas/StatisticsUpdateRequest'
     Pagination:
@@ -1013,8 +970,7 @@ components:
           description: Skill mana cost
           type: integer
         type:
-          description: Skill type
-          type: string
+          $ref: '#/components/schemas/SkillType'
         multiplier:
           description: Skill multiplier for example totalDamage = normalDamage * multiplier
           type: number
@@ -1024,8 +980,7 @@ components:
           type: number
           format: float
         effect:
-          description: Skill effect
-          type: string
+          $ref: '#/components/schemas/SkillEffect'
         effectDuration:
           description: Skill effect duration in turns
           type: integer
@@ -1047,8 +1002,7 @@ components:
           description: Skill learn statistics points cost
           type: integer
         characterClass:
-          description: Character class skill is for
-          type: string
+          $ref: '#/components/schemas/CharacterClass'
     SkillSearchRequest:
       type: object
       properties:
@@ -1067,17 +1021,17 @@ components:
           description: Skill type in
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SkillType'
         skillEffectIn:
           description: Skill effect in
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/SkillEffect'
         characterClassIn:
           description: Character class skill is for in
           type: array
           items:
-            type: string
+            $ref: '#/components/schemas/CharacterClass'
     AdventureCreateRequest:
       type: object
       required:
@@ -1143,8 +1097,7 @@ components:
           type: integer
           format: int64
         action:
-          description: Action that character performs in fight (ElementAction)
-          type: string
+          $ref: '#/components/schemas/ElementAction'
         skillId:
           description: Skill id (when using skill)
           type: integer
@@ -1183,7 +1136,7 @@ components:
           description: Item name fragment
           type: string
         typeIn:
-          description: Item type in (enum ItemType)
+          description: Item type in
           type: array
           items:
             $ref: '#/components/schemas/ItemType'
@@ -1253,17 +1206,13 @@ components:
           description: Character name
           type: string
         race:
-          description: Character race
-          type: string
+          $ref: '#/components/schemas/CharacterRace'
         sex:
-          description: Character sex
-          type: string
+          $ref: '#/components/schemas/CharacterSex'
         characterClass:
-          description: Character class
-          type: string
+          $ref: '#/components/schemas/CharacterClass'
         artwork:
-          description: Character artwork
-          type: string
+          $ref: '#/components/schemas/CharacterArtwork'
     CharacterBasics:
       type: object
       properties:
@@ -1400,8 +1349,8 @@ components:
       type: object
       properties:
         finishTime:
-          description: Occupation finish time
           type: string
+          format: DateTime
         occupationType:
           description: Character occupation
           type: string
@@ -1509,14 +1458,11 @@ components:
             - skillTraining
           properties:
             type:
-              description: Skill type
-              type: string
+              $ref: '#/components/schemas/SkillType'
             effect:
-              description: Skill effect
-              type: string
+              $ref: '#/components/schemas/SkillEffect'
             characterClass:
-              description: Character class skill is for
-              type: string
+              $ref: '#/components/schemas/CharacterClass'
             skillTraining:
               $ref: '#/components/schemas/SkillTraining'
     SkillTraining:
@@ -1658,8 +1604,7 @@ components:
           type: integer
           format: int64
         skillEffect:
-          description: Effect for each turn
-          type: string
+          $ref: '#/components/schemas/SkillEffect'
         duration:
           description: How many turns effect will last
           type: integer
@@ -1750,8 +1695,7 @@ components:
           description: Item name
           type: string
         type:
-          description: Item type (enum ItemType)
-          type: string
+          $ref: '#/components/schemas/ItemType'
         power:
           description: Item attribute power
           type: integer

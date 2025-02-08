@@ -21,17 +21,17 @@ class SkillHelper {
         Map args = [
                 name                    : "Bash",
                 manaCost                : 10,
-                type                    : SkillType.NORMAL_DAMAGE.toString(),
+                type                    : SkillType.NORMAL_DAMAGE,
                 multiplier              : 1.2f,
                 multiplierPerLevel      : 0.1f,
-                effect                  : SkillEffect.STUNNED.toString(),
+                effect                  : SkillEffect.STUNNED,
                 effectDuration          : 2,
                 effectDurationPerLevel  : 1,
                 effectMultiplier        : 0,
                 effectMultiplierPerLevel: 0,
                 goldCost                : 50,
                 statisticPointsCost     : 5,
-                characterClass          : CharacterClass.WARRIOR.toString()
+                characterClass          : CharacterClass.WARRIOR
         ]
 
         args << customArgs
@@ -87,9 +87,9 @@ class SkillHelper {
     static boolean compare(Skill skill, SkillBasic skillBasic) {
         assert skill.id == skillBasic.id
         assert skill.name == skillBasic.name
-        assert skill.type.toString() == skillBasic.type
-        assert skill.effect.toString() == skillBasic.effect
-        assert skill.characterClass.toString() == skillBasic.characterClass
+        assert skill.type == skillBasic.type
+        assert skill.effect == skillBasic.effect
+        assert skill.characterClass == skillBasic.characterClass
         assert skill.skillTraining.goldCost == skillBasic.skillTraining.goldCost
         assert skill.skillTraining.statisticPointsCost == skillBasic.skillTraining.statisticPointsCost
 
@@ -126,9 +126,9 @@ class SkillHelper {
         assert skill.id == skillDetails.id
         assert skill.name == skillDetails.name
         assert skill.manaCost == skillDetails.manaCost
-        assert skill.type.toString() == skillDetails.type
-        assert skill.effect.toString() == skillDetails.effect
-        assert skill.characterClass.toString() == skillDetails.characterClass
+        assert skill.type == skillDetails.type
+        assert skill.effect == skillDetails.effect
+        assert skill.characterClass == skillDetails.characterClass
         assert skill.multiplier == skillDetails.multiplier
         assert skill.multiplierPerLevel == skillDetails.multiplierPerLevel
         assert skill.effectDuration == skillDetails.effectDuration

@@ -21,7 +21,7 @@ class FightHelper {
 
     static boolean compare(FightEffect effect, FightEffectLite lite) {
         assert effect.id == lite.id
-        assert effect.skillEffect.toString() == lite.skillEffect
+        assert effect.skillEffect == lite.skillEffect
         assert effect.duration == lite.duration
         assert effect.playerEffect == lite.playerEffect
 

@@ -80,7 +80,7 @@ class FightControllerTest extends TestBase {
                     playerEffect: true)] as Set
             def fight = prepareFight(character, effect)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK.toString())
+            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
         then:
@@ -98,7 +98,7 @@ class FightControllerTest extends TestBase {
             character = characterServiceHelper.save(character)
             def fight = prepareFight(character)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.SPECIAL_ATTACK.toString()).skillId(skill.id)
+            def request = new FightActionRequest(character.id, ElementAction.SPECIAL_ATTACK).skillId(skill.id)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
         then:
@@ -107,7 +107,7 @@ class FightControllerTest extends TestBase {
                 FightHelper.compare(fightServiceHelper.getById(fight.id), it.fight)
                 assert it.playerCurrentMana == character.statistics.maxMana - skill.manaCost + character.statistics.maxMana * FightService.MANA_REGENERATION_PERCENT_PER_TURN / 100
                 assert it.playerCurrentHp
-                assert it.fight.fightEffects.first().skillEffect == SkillEffect.BLEEDING.toString()
+                assert it.fight.fightEffects.first().skillEffect == SkillEffect.BLEEDING
             }
     }
 
@@ -123,7 +123,7 @@ class FightControllerTest extends TestBase {
             fight.setEnemyCurrentHp(10)
             fight = fightServiceHelper.save(fight)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.USE_POTION.toString())
+            def request = new FightActionRequest(character.id, ElementAction.USE_POTION)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
         then:
@@ -148,7 +148,7 @@ class FightControllerTest extends TestBase {
             fight.setEnemyCurrentHp(10)
             fight = fightServiceHelper.save(fight)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK.toString())
+            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
             character = characterServiceHelper.getCharacter(character.id)
@@ -174,7 +174,7 @@ class FightControllerTest extends TestBase {
             fight.setEnemyCurrentHp(10)
             fightServiceHelper.save(fight)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK.toString())
+            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
             character = characterServiceHelper.getCharacter(character.id)
@@ -195,7 +195,7 @@ class FightControllerTest extends TestBase {
             character = characterServiceHelper.save(character)
             def fight = prepareFight(character)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK.toString())
+            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
             character = characterServiceHelper.getCharacter(character.id)
@@ -223,7 +223,7 @@ class FightControllerTest extends TestBase {
                     playerEffect: true)] as Set
             def fight = prepareFight(character, bleedingEffect)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK.toString())
+            def request = new FightActionRequest(character.id, ElementAction.NORMAL_ATTACK)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
             character = characterServiceHelper.getCharacter(character.id)
@@ -253,7 +253,7 @@ class FightControllerTest extends TestBase {
             fight.setEnemyCurrentHp(5)
             fight = fightServiceHelper.save(fight)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.USE_POTION.toString())
+            def request = new FightActionRequest(character.id, ElementAction.USE_POTION)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
         then:
@@ -281,7 +281,7 @@ class FightControllerTest extends TestBase {
                     playerEffect: true)] as Set
             def fight = prepareFight(character, effect)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.USE_POTION.toString())
+            def request = new FightActionRequest(character.id, ElementAction.USE_POTION)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
         then:
@@ -309,7 +309,7 @@ class FightControllerTest extends TestBase {
             fight.setEnemyCurrentHp(5)
             fight = fightServiceHelper.save(fight)
         and:
-            def request = new FightActionRequest(character.id, ElementAction.USE_POTION.toString())
+            def request = new FightActionRequest(character.id, ElementAction.USE_POTION)
         when:
             def response = httpPost(baseUrl, request, FightActionResponse)
         then:

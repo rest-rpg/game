@@ -35,7 +35,7 @@ class ItemHelper {
 
     static boolean compare(ItemCreateRequest request, ItemLite lite) {
         assert request.name == lite.name
-        assert request.type.toString() == lite.type
+        assert request.type == lite.type
         assert request.power == lite.power
         assert request.price == lite.price
 
@@ -45,7 +45,7 @@ class ItemHelper {
     static boolean compare(Item item, ItemLite lite) {
         assert item.id == lite.id
         assert item.name == lite.name
-        assert item.type.toString() == lite.type
+        assert item.type == lite.type
         assert item.power == lite.power
         assert item.price == lite.price
 

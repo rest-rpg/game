@@ -1,7 +1,6 @@
 package com.rest_rpg.game.character
 
 import com.rest_rpg.common.error.ErrorResponse
-import com.rest_rpg.game.character.model.CharacterArtwork
 import com.rest_rpg.game.configuration.TestBase
 import com.rest_rpg.game.fight.model.Fight
 import com.rest_rpg.game.occupation.Occupation
@@ -9,6 +8,7 @@ import com.rest_rpg.game.statistics.StatisticsHelper
 import com.rest_rpg.game.statistics.StatisticsServiceHelper
 import com.rest_rpg.user.api.model.Role
 import com.rest_rpg.user.api.model.UserLite
+import org.openapitools.model.CharacterArtwork
 import org.openapitools.model.CharacterBasics
 import org.openapitools.model.CharacterDetails
 import org.openapitools.model.CharacterLite
@@ -18,16 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 
-import java.util.stream.Collectors
-
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get
 
 class CharacterControllerTest extends TestBase {
 
     def baseUrl = "/game/character"
-    def imageUrl = { String characterArtwork -> baseUrl + "/image/" + characterArtwork }
-    def thumbnailUrl = { String characterArtwork -> baseUrl + "/thumbnail/" + characterArtwork }
-    def artworksUrl = baseUrl + "/artworks"
+    def imageUrl = { String characterArtwork -> "/game/avatars/full/${characterArtwork}.jpg" }
+    def thumbnailUrl = { String characterArtwork -> "/game/avatars/thumbnail/${characterArtwork}.jpg" }
     def userCharactersUrl = baseUrl + "/user-characters"
     def userCharacterUrl = { long characterId -> baseUrl + "/" + characterId }
 
@@ -70,17 +67,11 @@ class CharacterControllerTest extends TestBase {
         then:
             response.status == HttpStatus.FORBIDDEN
             response.body.message() == ErrorCodes.NOT_ENOUGH_SKILL_POINTS.toString()
-        when:
-            request = CharacterHelper.createCharacterCreateRequest(characterClass: "Demon")
-            response = httpPost(baseUrl, request, ErrorResponse)
-        then:
-            response.status == HttpStatus.NOT_FOUND
-            response.body.message() == ErrorCodes.ENUM_VALUE_NOT_FOUND.toString()
     }
 
     def "should get character image"() {
         when:
-            def requestGet = get(imageUrl(artwork))
+            def requestGet = get(imageUrl(artwork.toLowerCase()))
                     .contentType(MediaType.IMAGE_JPEG)
                     .accept(MediaType.IMAGE_JPEG)
 
@@ -95,7 +86,7 @@ class CharacterControllerTest extends TestBase {
 
     def "should get character thumbnail image"() {
         when:
-            def requestGet = get(thumbnailUrl(artwork))
+            def requestGet = get(thumbnailUrl(artwork.toLowerCase()))
                     .contentType(MediaType.IMAGE_JPEG)
                     .accept(MediaType.IMAGE_JPEG)
 
@@ -106,14 +97,6 @@ class CharacterControllerTest extends TestBase {
             artwork                                    || httpStatus
             CharacterArtwork.HUMAN_FEMALE_1.toString() || HttpStatus.OK.value()
             "FEMALE_123"                               || HttpStatus.NOT_FOUND.value()
-    }
-
-    def "should get character thumbnail enum"() {
-        when:
-            def response = httpGet(artworksUrl, List<String>)
-        then:
-            response.status == HttpStatus.OK
-            response.body.size() == Arrays.stream(CharacterArtwork.values()).map(Objects::toString).collect(Collectors.toList()).size()
     }
 
     def "should get user characters"() {

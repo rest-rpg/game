@@ -1,7 +1,6 @@
 package com.rest_rpg.game.character
 
 import com.rest_rpg.game.character.model.Character
-import com.rest_rpg.game.character.model.CharacterArtwork
 import com.rest_rpg.game.character_skill.CharacterSkill
 import com.rest_rpg.game.enemy.EnemyRepository
 import com.rest_rpg.game.equipment.Equipment
@@ -14,6 +13,7 @@ import com.rest_rpg.game.skill.SkillRepository
 import com.rest_rpg.game.skill.model.Skill
 import com.rest_rpg.game.statistics.StatisticsHelper
 import com.rest_rpg.game.statistics.StatisticsRepository
+import org.openapitools.model.CharacterArtwork
 import org.openapitools.model.CharacterClass
 import org.openapitools.model.CharacterRace
 import org.openapitools.model.CharacterSex

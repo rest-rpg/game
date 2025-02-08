@@ -1,10 +1,10 @@
 package com.rest_rpg.game.character
 
 import com.rest_rpg.game.character.model.Character
-import com.rest_rpg.game.character.model.CharacterArtwork
 import com.rest_rpg.game.equipment.EquipmentHelper
 import com.rest_rpg.game.skill.SkillHelper
 import com.rest_rpg.game.statistics.StatisticsHelper
+import org.openapitools.model.CharacterArtwork
 import org.openapitools.model.CharacterBasic
 import org.openapitools.model.CharacterClass
 import org.openapitools.model.CharacterCreateRequest
@@ -17,11 +17,11 @@ class CharacterHelper {
 
     static CharacterCreateRequest createCharacterCreateRequest(Map customArgs = [:]) {
         Map args = [
-                name          : "John" + Math.random().toString(),
-                race          : CharacterRace.HUMAN.toString(),
-                sex           : CharacterSex.FEMALE.toString(),
-                characterClass: CharacterClass.WARRIOR.toString(),
-                artwork       : CharacterArtwork.HUMAN_FEMALE_1.toString(),
+                name          : "John" + Math.random(),
+                race          : CharacterRace.HUMAN,
+                sex           : CharacterSex.FEMALE,
+                characterClass: CharacterClass.WARRIOR,
+                artwork       : CharacterArtwork.HUMAN_FEMALE_1,
                 statistics    : StatisticsHelper.createStatisticsUpdateRequest()
         ]
 
@@ -42,15 +42,15 @@ class CharacterHelper {
 
     static boolean compare(Character character, CharacterBasic dto) {
         assert character.id == dto.id
-        assert character.sex.toString() == dto.sex
-        assert character.artwork.toString() == dto.artwork
-        assert character.characterClass.toString() == dto.characterClass
-        assert character.race.toString() == dto.race
-        assert character.name.toString() == dto.name
+        assert character.sex == dto.sex
+        assert character.artwork == dto.artwork
+        assert character.characterClass == dto.characterClass
+        assert character.race == dto.race
+        assert character.name == dto.name
         assert character.statistics.currentXp == dto.statistics.currentXp
         assert character.statistics.xpToNextLevel == dto.statistics.xpToNextLevel
         assert character.statistics.currentLevel == dto.statistics.currentLevel
-        assert character.occupation?.finishTime?.toString() == dto.occupation?.finishTime
+        assert character.occupation?.finishTime == dto.occupation?.finishTime
         assert character.occupation?.occupationType == dto.occupation?.occupationType
 
         true
@@ -58,15 +58,15 @@ class CharacterHelper {
 
     static boolean compare(Character character, CharacterDetails dto) {
         assert character.id == dto.id
-        assert character.sex.toString() == dto.sex
-        assert character.artwork.toString() == dto.artwork
-        assert character.characterClass.toString() == dto.characterClass
-        assert character.race.toString() == dto.race
-        assert character.name.toString() == dto.name
+        assert character.sex == dto.sex
+        assert character.artwork == dto.artwork
+        assert character.characterClass == dto.characterClass
+        assert character.race == dto.race
+        assert character.name == dto.name
         assert character.statistics.currentXp == dto.statistics.currentXp
         assert character.statistics.xpToNextLevel == dto.statistics.xpToNextLevel
         assert character.statistics.currentLevel == dto.statistics.currentLevel
-        assert character.occupation?.finishTime?.toString() == dto.occupation?.finishTime
+        assert character.occupation?.finishTime == dto.occupation?.finishTime
         assert character.occupation?.occupationType == dto.occupation?.occupationType
         def skills = character.skills.skill
         assert SkillHelper.compare(skills, dto.skills)

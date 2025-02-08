@@ -33,6 +33,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.openapitools.model.CharacterArtwork;
 import org.openapitools.model.CharacterClass;
 import org.openapitools.model.CharacterRace;
 import org.openapitools.model.CharacterSex;
@@ -186,7 +187,6 @@ import java.util.Set;
 public class Character {
 
     public static final String CHARACTER_BASIC = "CHARACTER_BASIC_GRAPH";
-    public static final String CHARACTER_DETAILS = "CHARACTER_DETAILS_GRAPH";
     public static final String CHARACTER_FIGHT = "CHARACTER_FIGHT_GRAPH";
     public static final String CHARACTER_FIGHT_ACTION = "CHARACTER_FIGHT_ACTION_GRAPH";
     public static final String CHARACTER_FIGHT_LITE = "CHARACTER_FIGHT_LITE_GRAPH";
@@ -246,11 +246,11 @@ public class Character {
 
     public static Character createCharacter(@NotNull @Valid CharacterCreateRequestDto dto, long userId) {
         var character = Character.builder()
-                .name(dto.getName())
-                .characterClass(dto.getCharacterClass())
-                .artwork(dto.getArtwork())
-                .race(dto.getRace())
-                .sex(dto.getSex())
+                .name(dto.name())
+                .characterClass(dto.characterClass())
+                .artwork(dto.artwork())
+                .race(dto.race())
+                .sex(dto.sex())
                 .skills(new HashSet<>())
                 .equipment(Equipment.init())
                 .occupation(Occupation.init())

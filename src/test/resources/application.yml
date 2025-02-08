@@ -7,7 +7,6 @@ spring:
   jpa:
     #    show-sql: true
     #    properties.hibernate.format_sql: true
-    spring.jpa.database-platform: org.hibernate.dialect.H2Dialect
     hibernate:
       ddl-auto: validate
   mail:
@@ -21,6 +20,8 @@ spring:
           auth: true
           starttls:
             enable: true
+  mvc:
+    static-path-pattern: /game/**
 server:
   error:
     include-message: always

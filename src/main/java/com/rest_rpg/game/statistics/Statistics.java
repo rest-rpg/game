@@ -1,7 +1,6 @@
 package com.rest_rpg.game.statistics;
 
 import com.rest_rpg.game.character.model.Character;
-import com.rest_rpg.game.exceptions.EnumValueNotFoundException;
 import com.rest_rpg.game.exceptions.NotEnoughManaException;
 import com.rest_rpg.game.exceptions.NotEnoughSkillPointsException;
 import com.rest_rpg.game.fight.FightService;
@@ -222,7 +221,6 @@ public class Statistics {
             case ELF -> this.dexterity += CHARACTER_RACE_BONUS;
             case DWARF -> this.constitution += CHARACTER_RACE_BONUS;
             case HUMAN -> this.strength += CHARACTER_RACE_BONUS;
-            default -> throw new EnumValueNotFoundException();
         }
     }
 

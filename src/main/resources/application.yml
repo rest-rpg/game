@@ -13,6 +13,8 @@ spring:
   sql:
     init:
       platform: mysql
+  mvc:
+    static-path-pattern: /game/**
 server:
   error:
     include-message: always
